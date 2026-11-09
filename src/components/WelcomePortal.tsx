@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import { Wifi, ArrowRight, CreditCard, Check } from 'lucide-react';
 import { HubViewState } from '../contracts/sessionContract';
+import { enterFullscreen } from '../utils/fullscreen';
 
 interface WelcomePortalProps {
   viewState: HubViewState;
@@ -33,6 +34,8 @@ export const WelcomePortal: React.FC<WelcomePortalProps> = ({
       return;
     }
     setError(null);
+    // Auto full screen upon starting deep work session to remove OS task bar and other tabs
+    enterFullscreen().catch(() => {});
     onStartSession(deskId.trim(), duration);
   };
 

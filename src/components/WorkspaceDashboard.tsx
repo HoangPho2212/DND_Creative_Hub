@@ -18,6 +18,8 @@ import {
   Ban,
   Sparkles,
   Volume2,
+  Maximize2,
+  Minimize2,
 } from 'lucide-react';
 import {
   HubViewState,
@@ -35,6 +37,7 @@ interface WorkspaceDashboardProps {
   onChangeTab: (tab: DashboardTab) => void;
   onChangeMediaTab: (tab: MediaTab) => void;
   onCompleteSession: () => void;
+  onToggleFullscreen?: () => void;
 }
 
 export const WorkspaceDashboard: React.FC<WorkspaceDashboardProps> = ({
@@ -46,6 +49,7 @@ export const WorkspaceDashboard: React.FC<WorkspaceDashboardProps> = ({
   onChangeTab,
   onChangeMediaTab,
   onCompleteSession,
+  onToggleFullscreen,
 }) => {
   const [newNoteText, setNewNoteText] = useState('');
   const [currentTime, setCurrentTime] = useState(formatTimeHHMM());
@@ -153,6 +157,21 @@ export const WorkspaceDashboard: React.FC<WorkspaceDashboardProps> = ({
           <div className="font-mono text-slate-muted text-xs sm:text-sm hidden sm:block">
             {currentTime}
           </div>
+
+          {/* Fullscreen Kiosk Mode Toggle */}
+          {onToggleFullscreen && (
+            <button
+              onClick={onToggleFullscreen}
+              title={viewState.isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+              className="p-1.5 text-slate-muted hover:text-slate-text hover:bg-slate-100 rounded-lg transition-colors"
+            >
+              {viewState.isFullscreen ? (
+                <Minimize2 className="w-4 h-4 text-emerald" />
+              ) : (
+                <Maximize2 className="w-4 h-4" />
+              )}
+            </button>
+          )}
 
           <div
             title={viewState.deskId}

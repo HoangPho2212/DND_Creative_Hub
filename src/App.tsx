@@ -40,6 +40,7 @@ export const App: React.FC = () => {
               onChangeTab={actions.setActiveTab}
               onChangeMediaTab={actions.setActiveMediaTab}
               onCompleteSession={actions.completeSession}
+              onToggleFullscreen={actions.toggleFullscreen}
             />
           )}
 

@@ -13,6 +13,15 @@ describe('useHubSession State Machine & JayContract', () => {
     expect(result.current.viewState.deskId).toBe('Desk 04');
     expect(result.current.viewState.selectedDurationHours).toBe(2);
     expect(result.current.viewState.isBlockedModalOpen).toBe(false);
+    expect(result.current.viewState.isFullscreen).toBe(false);
+    expect(typeof result.current.viewState.fullscreenSupported).toBe('boolean');
+  });
+
+  it('✅ provides toggleFullscreen, requestFullscreen, and exitFullscreen actions', () => {
+    const { result } = renderHook(() => useHubSession());
+    expect(typeof result.current.actions.toggleFullscreen).toBe('function');
+    expect(typeof result.current.actions.requestFullscreen).toBe('function');
+    expect(typeof result.current.actions.exitFullscreen).toBe('function');
   });
 
   it('✅ transitions from portal to workspace upon startSession with valid input', () => {

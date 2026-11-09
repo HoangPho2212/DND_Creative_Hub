@@ -85,6 +85,10 @@ export interface HubViewState {
   activeMediaTab: MediaTab;
   mediaUrl: string;
   isMediaLoading: boolean;
+
+  // Fullscreen State
+  isFullscreen: boolean;
+  fullscreenSupported: boolean;
 }
 
 /**
@@ -104,6 +108,9 @@ export interface HubActionsContract {
   setActiveTab: (tab: DashboardTab) => void;
   setActiveMediaTab: (tab: MediaTab) => void;
   checkoutSession: () => Promise<{ success: boolean; sessionCode: string }>;
+  requestFullscreen: () => Promise<boolean>;
+  exitFullscreen: () => Promise<boolean>;
+  toggleFullscreen: () => Promise<void>;
 }
 
 /**

@@ -46,6 +46,8 @@ const mockViewState: HubViewState = {
   activeMediaTab: 'youtube',
   mediaUrl: 'https://music.youtube.com/',
   isMediaLoading: false,
+  isFullscreen: false,
+  fullscreenSupported: true,
 };
 
 describe('WorkspaceDashboard (Screen 02)', () => {
@@ -159,5 +161,26 @@ describe('WorkspaceDashboard (Screen 02)', () => {
     fireEvent.click(blockedTab);
 
     expect(handleNavigate).toHaveBeenCalledWith('https://facebook.com');
+  });
+
+  it('triggers onToggleFullscreen when fullscreen button is clicked', () => {
+    const handleToggleFullscreen = vi.fn();
+    render(
+      <WorkspaceDashboard
+        viewState={mockViewState}
+        onTogglePause={vi.fn()}
+        onExtendSession={vi.fn()}
+        onAddNote={vi.fn()}
+        onNavigate={vi.fn()}
+        onChangeTab={vi.fn()}
+        onChangeMediaTab={vi.fn()}
+        onCompleteSession={vi.fn()}
+        onToggleFullscreen={handleToggleFullscreen}
+      />
+    );
+
+    const fsBtn = screen.getByTitle(/Fullscreen/i);
+    fireEvent.click(fsBtn);
+    expect(handleToggleFullscreen).toHaveBeenCalledTimes(1);
   });
 });

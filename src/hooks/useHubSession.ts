@@ -24,6 +24,13 @@ import {
   NetworkApiClient,
 } from '../services/networkFixture';
 import { calculateEndTime, formatTimeHHMM } from '../utils/formatters';
+import {
+  isBrowserFullscreen,
+  isSupportedFullscreen,
+  enterFullscreen,
+  leaveFullscreen,
+  toggleBrowserFullscreen,
+} from '../utils/fullscreen';
 
 export function useHubSession() {
   const [viewState, setViewState] = useState<HubViewState>(() => {
@@ -49,8 +56,32 @@ export function useHubSession() {
       activeMediaTab: 'youtube',
       mediaUrl: 'https://music.youtube.com/',
       isMediaLoading: false,
+      isFullscreen: isBrowserFullscreen(),
+      fullscreenSupported: isSupportedFullscreen(),
     };
   });
+
+  // Fullscreen Change Synchronizer
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setViewState((prev) => ({
+        ...prev,
+        isFullscreen: isBrowserFullscreen(),
+      }));
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+    };
+  }, []);
 
   // Timer Tick Hook
   useEffect(() => {
@@ -143,6 +174,7 @@ export function useHubSession() {
   }, []);
 
   const completeSession = useCallback(() => {
+    leaveFullscreen();
     setViewState((prev) => ({
       ...prev,
       isRunning: false,
@@ -152,6 +184,7 @@ export function useHubSession() {
   }, []);
 
   const resetSession = useCallback(() => {
+    leaveFullscreen();
     setViewState((prev) => ({
       ...prev,
       screen: 'portal',
@@ -264,6 +297,18 @@ export function useHubSession() {
     return res;
   }, [viewState.metrics, viewState.deskId]);
 
+  const requestFullscreenAction = useCallback(async (): Promise<boolean> => {
+    return await enterFullscreen();
+  }, []);
+
+  const exitFullscreenAction = useCallback(async (): Promise<boolean> => {
+    return await leaveFullscreen();
+  }, []);
+
+  const toggleFullscreenAction = useCallback(async (): Promise<void> => {
+    await toggleBrowserFullscreen();
+  }, []);
+
   const actions: HubActionsContract = useMemo(
     () => ({
       startSession,
@@ -279,6 +324,9 @@ export function useHubSession() {
       setActiveTab,
       setActiveMediaTab,
       checkoutSession,
+      requestFullscreen: requestFullscreenAction,
+      exitFullscreen: exitFullscreenAction,
+      toggleFullscreen: toggleFullscreenAction,
     }),
     [
       startSession,
@@ -294,6 +342,9 @@ export function useHubSession() {
       setActiveTab,
       setActiveMediaTab,
       checkoutSession,
+      requestFullscreenAction,
+      exitFullscreenAction,
+      toggleFullscreenAction,
     ]
   );
 

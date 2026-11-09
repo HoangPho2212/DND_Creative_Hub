@@ -42,6 +42,8 @@ const mockViewState: HubViewState = {
   activeMediaTab: 'youtube',
   mediaUrl: 'https://music.youtube.com/',
   isMediaLoading: false,
+  isFullscreen: false,
+  fullscreenSupported: true,
 };
 
 describe('BlockedOverlay (Screen 03)', () => {
